@@ -12,6 +12,7 @@
 #define DUST_PIN A1
 #define WATER_PIN A3
 #define LED_PIN 3
+#define PIR_PIN 7
 
 // DHT 온습도 센서 설정
 DHT dht(DHT_PIN, DHT11);
@@ -75,6 +76,7 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(DC_PIN_A1, OUTPUT);
   pinMode(DC_PIN_A2, OUTPUT);
+  pinMode(PIR_PIN, INPUT);
   digitalWrite(DC_PIN_A1, LOW);
   digitalWrite(DC_PIN_A2, LOW);
 
@@ -83,7 +85,7 @@ void setup() {
 
 void loop() {
   if (espSerial.available()) {
-    String data = espSerial.readStringUntil('\n');  // ESP8266으로부터 데이터 읽기
+    String data = espSerial.readStringUntil(';');  // ESP8266으로부터 데이터 읽기
     Serial.println("Received from ESP8266: " + data);
 
     String parts[10];
@@ -137,15 +139,27 @@ void loop() {
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
   int waterLevel = analogRead(WATER_PIN);
+  int pir = digitalRead(PIR_PIN);
 
   espSerial.print("TEMP:");
-  espSerial.println(temperature);
+  espSerial.print(temperature);
+  espSerial.print(";");
+  delay(500);
   espSerial.print("HUMI:");
-  espSerial.println(humidity);
+  espSerial.print(humidity);
+  espSerial.print(";");
+  delay(500);
   espSerial.print("WATER:");
-  espSerial.println(waterLevel);
+  espSerial.print(waterLevel);
+  espSerial.print(";");
+  delay(500);
   espSerial.print("DUST:");
-  espSerial.println(dust);
-
+  espSerial.print(dust);
+  espSerial.print(";");
+  delay(500);
+  Serial.println(pir);
+  espSerial.print("PIR:");
+  espSerial.print(pir);
+  espSerial.print(";");
   delay(500);
 }

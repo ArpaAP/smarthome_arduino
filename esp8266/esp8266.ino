@@ -21,6 +21,7 @@ float temperature = 0;
 float humidity = 0;
 int waterLevel = 0;
 float dust = 0;
+int pir = 0;
 
 bool securityMode = false;
 bool windowOpen = false;
@@ -76,17 +77,21 @@ void actionUpdatedEventHandler(const char* payload, size_t length) {
 
   if (windowOpen != newWindowOpen) {
     if (newWindowOpen) {
-      arduinoSerial.println("SERVO:1");
+      arduinoSerial.print("SERVO:1");
+      arduinoSerial.print(";");
     } else {
-      arduinoSerial.println("SERVO:0");
+      arduinoSerial.print("SERVO:0");
+      arduinoSerial.print(";");
     }
   }
 
   if (fanOn != newFanOn) {
     if (newFanOn) {
-      arduinoSerial.println("DC:1");
+      arduinoSerial.print("DC:1");
+      arduinoSerial.print(";");
     } else {
-      arduinoSerial.println("DC:0");
+      arduinoSerial.print("DC:0");
+      arduinoSerial.print(";");
     }
   }
 
@@ -94,9 +99,11 @@ void actionUpdatedEventHandler(const char* payload, size_t length) {
     if (newLightOn) {
       Serial.println("led = ");
       Serial.println(lightOn);
-      arduinoSerial.println("LED:1");
+      arduinoSerial.print("LED:1");
+      arduinoSerial.print(";");
     } else {
-      arduinoSerial.println("LED:0");
+      arduinoSerial.print("LED:0");
+      arduinoSerial.print(";");
     }
   }
 
@@ -106,8 +113,8 @@ void actionUpdatedEventHandler(const char* payload, size_t length) {
   lightOn = newLightOn;
 }
 
-Task socketTask(50, TASK_FOREVER, &socketTaskCallback);
-Task serialTask(1000, TASK_FOREVER, &serialTaskCallback);
+Task socketTask(TASK_IMMEDIATE, TASK_FOREVER, &socketTaskCallback);
+Task serialTask(300, TASK_FOREVER, &serialTaskCallback);
 
 void setup() {
   Serial.begin(4800);
@@ -135,7 +142,7 @@ void socketTaskCallback() {
 
 void serialTaskCallback() {
   if (arduinoSerial.available()) {
-    String data = arduinoSerial.readStringUntil('\n');  // ESP8266으로부터 데이터 읽기
+    String data = arduinoSerial.readStringUntil(';');  // ESP8266으로부터 데이터 읽기
     Serial.println("Received from Arduino: " + data);
 
     String parts[10];
@@ -160,6 +167,12 @@ void serialTaskCallback() {
     if (cmd == "DUST") {
       dust = parts[1].toFloat();
       jsonDoc["dust"] = dust;
+    }
+    if (cmd == "PIR") {
+      Serial.println(" PPPPPPPPPPPPPIR = ");
+      pir = parts[1].toInt();
+      Serial.println(pir);
+      jsonDoc["pir"] = pir ? true : false;
     }
 
     String jsonString;
