@@ -1,1 +1,1 @@
-# smarthome_arduino
+# smarthome_hardware
