@@ -147,5 +147,5 @@ void loop() {
   espSerial.print("DUST:");
   espSerial.println(dust);
 
-  delay(1000);
+  delay(500);
 }
