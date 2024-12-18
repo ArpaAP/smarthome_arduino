@@ -113,7 +113,7 @@ void actionUpdatedEventHandler(const char* payload, size_t length) {
 }
 
 Task socketTask(TASK_IMMEDIATE, TASK_FOREVER, &socketTaskCallback);
-Task serialTask(300, TASK_FOREVER, &serialTaskCallback);
+Task serialTask(500, TASK_FOREVER, &serialTaskCallback);
 
 void setup() {
   Serial.begin(4800);
