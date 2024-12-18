@@ -13,7 +13,7 @@
 #define WATER_PIN A3
 #define LED_PIN 3
 #define PIR_PIN 7
-
+ 
 // DHT 온습도 센서 설정
 DHT dht(DHT_PIN, DHT11);
 
