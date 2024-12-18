@@ -56,7 +56,6 @@ void messageEventHandler(const char* payload, size_t length) {
 }
 
 void actionUpdatedEventHandler(const char* payload, size_t length) {
-  Serial.println("aaaaaaaaaaaaaaaaaaaaaaaa");
   StaticJsonDocument<256> jsonDoc;
 
   // JSON 문자열을 파싱
@@ -169,7 +168,6 @@ void serialTaskCallback() {
       jsonDoc["dust"] = dust;
     }
     if (cmd == "PIR") {
-      Serial.println(" PPPPPPPPPPPPPIR = ");
       pir = parts[1].toInt();
       Serial.println(pir);
       jsonDoc["pir"] = pir ? true : false;
