@@ -113,7 +113,7 @@ void actionUpdatedEventHandler(const char* payload, size_t length) {
 }
 
 Task socketTask(TASK_IMMEDIATE, TASK_FOREVER, &socketTaskCallback);
-Task serialTask(500, TASK_FOREVER, &serialTaskCallback);
+Task serialTask(1200, TASK_FOREVER, &serialTaskCallback);
 
 void setup() {
   Serial.begin(4800);
@@ -126,7 +126,7 @@ void setup() {
   }
   Serial.println("\nWiFi connected");
 
-  socketIO.begin(host, port, "/socket.io/?transport=websocket");
+  socketIO.begin(host, port);
   socketIO.on("actionUpdated", actionUpdatedEventHandler);
 
   scheduler.addTask(socketTask);
